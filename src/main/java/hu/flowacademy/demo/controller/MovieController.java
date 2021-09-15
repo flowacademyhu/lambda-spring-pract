@@ -6,15 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MovieController {
 
     private final MovieService movieService;
 
     @GetMapping("/movies")
+//    @RequestMapping(value = "/movies", method = RequestMethod.GET)
     public List<MovieModel> findAll() {
         return movieService.findAll();
     }
@@ -25,13 +29,14 @@ public class MovieController {
     }
 
     @PostMapping("/movies")
-    public MovieModel save(@RequestBody MovieModel movieModel) {
+    public MovieModel save(@Valid @RequestBody MovieModel movieModel, @RequestHeader("Content-Type") String contentType) {
+        System.out.println(contentType);
         return movieService.save(movieModel);
     }
 
     @PutMapping("/movies/{id}")
-    public MovieModel update(@PathVariable String id,
-                             @RequestBody MovieModel movieModel) {
+    public MovieModel update(@NotNull @PathVariable String id,
+                             @Valid @RequestBody MovieModel movieModel) {
         return movieService.update(id, movieModel);
     }
 
