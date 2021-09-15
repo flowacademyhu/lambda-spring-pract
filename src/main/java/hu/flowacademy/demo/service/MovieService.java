@@ -1,42 +1,35 @@
 package hu.flowacademy.demo.service;
 
 import hu.flowacademy.demo.model.MovieModel;
+import hu.flowacademy.demo.repository.MovieRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MovieService {
 
-    private Map<String, MovieModel> data = new HashMap<>();
+    private final MovieRepository movieRepository;
 
     public List<MovieModel> findAll() {
-        return data.values()
-                .stream()
-                .sorted((o1, o2) -> String.CASE_INSENSITIVE_ORDER.compare(o1.getTitle(), o2.getTitle()))
-                .collect(Collectors.toList());
+        return movieRepository.findAll();
     }
 
     public MovieModel findById(String id) {
-        return data.values().stream()
-                .filter(movieModel -> id.equals(movieModel.getId()))
-                .findFirst().orElse(null);
+        return movieRepository.findById(id);
     }
 
     public MovieModel save(MovieModel movieModel) {
-        String id = UUID.randomUUID().toString();
-        MovieModel model = movieModel.toBuilder().id(id).build();
-        data.put(id, model);
-        return model;
+        return movieRepository.save(movieModel);
     }
 
     public MovieModel update(String id, MovieModel movieModel) {
-        data.put(id, movieModel);
-        return movieModel;
+        return movieRepository.update(id, movieModel);
     }
 
     public void deleteById(String id) {
-        data.remove(id);
+        movieRepository.deleteById(id);
     }
 }
